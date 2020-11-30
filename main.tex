@@ -1,4 +1,5 @@
-\documentclass[twocolumn,usenames,dvipsnames]{aastex63}
+%\documentclass[twocolumn,usenames,dvipsnames]{aa}
+\documentclass{aa}
 
 \usepackage{graphicx}
 \usepackage{verbatim}
@@ -7,7 +8,6 @@
 \usepackage{shortbold}
 \usepackage{booktabs}
 \usepackage{tabularx}
-\usepackage{hyperref}
 \usepackage{amsmath}
 \usepackage{array}
 \usepackage{multirow}
@@ -15,6 +15,9 @@
 \usepackage[normalem]{ulem}
 \usepackage{xspace}
 \usepackage{xcolor}
+\usepackage{txfonts}
+
+\usepackage[bookmarks = true,colorlinks = true,linkcolor = red,urlcolor = blue,citecolor = blue,pdftex,bookmarks = true,linktocpage = true,hyperindex = true,breaklinks]{hyperref}
 
 \newcommand{\cheung}[1]{\textcolor{red}{{#1}}}
 \newcommand{\bose}[1]{\textcolor{blue}{{#1}}}
@@ -25,126 +28,178 @@
 \def\zz#1{%
 \ifdim#1pt>89pt\cellcolor{green}\else
 \ifdim#1pt>79pt\cellcolor{yellow}\else
-\cellcolor{OrangeRed}\fi\fi
+\cellcolor{red}\fi\fi
 #1}
 
 
 \begin{document}
 
-\title{Multi-Channel Auto-Calibration for the Atmospheric Imaging Assembly with Deep Learning}
+\title{Multi-Channel Auto-Calibration for the Atmospheric Imaging Assembly using Machine Learning}
 
-\author{Luiz F. G. dos Santos}
-\affil{The Catholic University of America, 620 Michigan Avenue NE, Washington, DC 20064, USA}
-\affil{Heliophysics Science Division, NASA, Goddard Space Flight Center, Greenbelt, MD 20771, USA}
-\author{Souvik Bose}
-\affil{Rosseland Center for Solar Physics, University of Oslo,P.O. Box 1029 Blindern, NO-0315 Oslo, Norway}
-\affil{Institute of Theoretical Astrophysics, University of Oslo,P.O. Box 1029 Blindern, NO-0315 Oslo, Norway}
-\author{Brad Neuberg}
-\affil{Frontier Development Lab, Mountain View, CA 94043, USA}
-\affil{SETI Institute, Mountain View, CA 94043, USA}
-\author{Valentina Salvatelli}
-\affil{Frontier Development Lab, Mountain View, CA 94043, USA}
-\affil{SETI Institute, Mountain View, CA 94043, USA}
-\author{Mark C. M. Cheung}
-\affil{Lockheed Martin Solar \& Astrophysics Laboratory (LMSAL), Palo Alto, CA 94304, USA}
-\author{Miho Janvier}
-\affil{Universit\'e Paris-Saclay, CNRS, Institut d'astrophysique spatiale, Orsay, France}
-\author{Meng Jin}
-\affil{SETI Institute, Mountain View, CA 94043, USA}
-\affil{Lockheed Martin Solar \& Astrophysics Laboratory (LMSAL), Palo Alto, CA 94304, USA}
-\author{Yarin Gal}
-\affil{OATML, Department of Computer Science, University of Oxford, Oxford OX1 3QD, UK}
-\author{At{\i}l{\i}m G\"{u}ne\c{s} Bayd{\rlap{\.}\i}n}
-\affil{Department of Engineering Science, University of Oxford, Oxford, Oxford OX1 3PJ, UK}
+\author{Luiz F. G. dos Santos\inst{1,2}
+        \and
+        Souvik Bose\inst{3,4}
+        \and
+        Valentina Salvatelli\inst{5,6}
+        \and
+        Brad Neuberg\inst{5,6}
+        \and
+        Mark C. M. Cheung\inst{7}
+        \and
+        Miho Janvier\inst{8}
+        \and
+        Meng Jin\inst{6,7}
+        \and
+        Yarin Gal\inst{9}
+        \and
+        Paul Boerner\inst{7}
+        \and
+        At{\i}l{\i}m G\"{u}ne\c{s} Bayd{\rlap{\.}\i}n\inst{10,11}
+        }
+
+\institute{Heliophysics Science Division, NASA, Goddard Space Flight Center, Greenbelt, MD 20771, USA
+        \and
+        The Catholic University of America, Washington, DC 20064, USA % 620 Michigan Avenue NE,
+        \and
+        Rosseland Center for Solar Physics, University of Oslo,P.O. Box 1029 Blindern, NO-0315 Oslo, Norway
+        \and
+        Institute of Theoretical Astrophysics, University of Oslo,P.O. Box 1029 Blindern, NO-0315 Oslo, Norway
+        \and
+        Frontier Development Lab, Mountain View, CA 94043, USA
+        \and
+        SETI Institute, Mountain View, CA 94043, USA
+        \and
+        Lockheed Martin Solar \& Astrophysics Laboratory (LMSAL), Palo Alto, CA 94304, USA
+        \and
+        Universit\'e Paris-Saclay, CNRS, Institut d'astrophysique spatiale, Orsay, France
+        \and
+        OATML, Department of Computer Science, University of Oxford, Oxford OX1 3QD, UK
+        \and
+        Department of Computer Science, University of Oxford, Oxford OX1 3QD, UK
+        \and
+        Department of Engineering Science, University of Oxford, Oxford OX1 3PJ, UK}
 
 
+\abstract
+{Solar activity plays a quintessential role in influencing the interplanetary medium and space-weather around the Earth. Remote sensing instruments on-board heliophysics space missions provide a pool of information about the Sun’s activity, via the measurement of its magnetic field and the emission of light from the multi-layered, multi-thermal and dynamic solar atmosphere. Extreme UV (EUV) wavelength observations from space help in understanding the subtleties of the outer layers of the Sun, namely the chromosphere and the corona. Unfortunately, such instruments, like the Atmospheric Imaging Assembly (AIA) onboard NASA’s Solar Dynamics Observatory (SDO), suffer from time-dependent degradation that reduces their sensitivity. Current state-of-the-art calibration techniques rely on sounding rocket flights to maintain absolute calibration, which are infrequent, complex, and limited to a single vantage point.}
+{We aim to develop a novel method based on convolutional neural networks (CNN) that exploits spatial patterns on the solar surface across multi-wavelength observations to auto-calibrate the instrument degradation.}
+{We establish two CNN architectures that take either single-channel or multi-channel input and train the models using SDOML dataset. The training set is further augmented by randomly degrading images at each epoch. We also develop a non-ML baseline model to evaluate the performance of the CNN models. With the best trained models, we reconstruct the AIA multi-channel degradation curves of 2010-2020 and compare with the sounding-rocket based degradation curves. }
+{Our results indicate that the CNN-based models significantly out-perform the non-ML baseline model in calibrating instrument degradation. And multi-channel CNN outperforms the single-channel CNN, which suggests the importance of cross-channel relations between different EUV channels for recovering the degradation profiles. The CNN-based models reproduce the degradation corrections derived from the sounding rocket cross-calibration measurements within the experimental measurement uncertainty, indicating that it performs equally well when compared with the current techniques.}
+{Our approach establishes the framework for a novel technique based on CNN to calibrate EUV instruments. We envision that this technique can be adapted to other imaging or spectral instruments operating at other wavelengths.}
 
-\keywords{Sun: Solar extreme ultraviolet emission; Solar active regions;  -- methods: GPU computing; Convolutional neural networks; }
 
-\begin{abstract}
+\keywords{Sun: Solar extreme ultraviolet emission; Solar active regions; -- instrumentation: Solar instruments;  -- methods: GPU computing; Neural Networks; Convolutional neural networks; Regression; Astronomy data modeling}
 
+ \maketitle
 
-Solar activity plays a quintessential role in influencing the interplanetary medium and space-weather around the Earth. Remote sensing instruments on-board heliophysics space missions provide a pool of information about the Sun’s activity, via the measurement of its magnetic field and the emission of light from the multi-layered, multi-thermal and dynamic solar atmosphere. Extreme UV (EUV) wavelength observations from space help in understanding the subtleties of the outer layers of the Sun, namely the chromosphere and the corona. Unfortunately, such instruments, like the Atmospheric Imaging Assembly (AIA) onboard NASA’s Solar Dynamics Observatory (SDO), suffer from time-dependent degradation that reduces their sensitivity. Current state-of-the-art calibration techniques rely on periodic sounding rockets which can be infrequent and rather unfeasible for deep-space missions. As a part of Frontier Development Lab, we devised a convolutional neural network (CNN) based approach to calibrate, as an alternate to the sounding rocket missions. We use SDO-AIA data for our analysis that aims to perform the auto-calibration by exploiting spatial patterns on the solar surface across multi-wavelength observations. Our results show that CNN based models could comprehensively reproduce the outcomes of the sounding rocket experiments within a reasonable degree of accuracy, indicating that it performs equally well when compared with the current techniques. Furthermore, comparison with a standard “astronomer’s technique” (baseline model) reveal that the CNN approach outperforms it quite significantly. This approach establishes the framework for a novel technique to calibrate EUV instruments and advance our understanding of the cross-channel relation between different EUV channels. 
-\end{abstract}
 
 \section{Introduction}
 \label{Section:intro}
-Solar activity plays a significant role in influencing the interplanetary medium and space weather around Earth and all the other planets of the solar system \citep{Schwenn2006}. Complex mechanisms govern such dynamic phenomena, which are crucial and challenging to understand. Remote-sensing instruments onboard heliophysics missions can provide a wealth of information on the Sun’s activity, primarily via capturing the emission of light from the multi-layered solar atmosphere and the measurement of magnetic fields.
+Solar activity plays a significant role in influencing the interplanetary medium and space weather around Earth and all the other planets of the solar system \citep{Schwenn2006}. These phenomena are mostly driven by complex mechanisms that, to a large extent, have remained elusive. 
+%govern such dynamic phenomena, causing a major impediment towards a better understanding of such phenomena. 
+Remote-sensing instruments onboard heliophysics missions can provide a wealth of information on the Sun’s activity, primarily via capturing the emission of light from the multi-layered solar atmosphere, thereby leading to the inference of various physical quantities such as magnetic fields, plasma velocities, temperature and emission measure, to name a few.
+%and the measurement of magnetic and velocity fields.
 
-\begin{figure*}[ht!]
-    \includegraphics[width=7.1in]{Channels_Horizontal.pdf}
-    \caption{Set of images to exemplify how degradation affects the AIA images. The two sets are composed of seven images from different EUV channels. From left to right: AIA 94~\AA, AIA 131~\AA, AIA 304~\AA, AIA 335~\AA, AIA 171~\AA, AIA 193~\AA, and AIA 211~\AA. The top row corresponds to images from May $13^{th}$, 2010 and the bottom row shows images from August $31^{st}$, 2019, with no degradation correction. The 304~\AA~channel images are in log-scale due the severe degradation.}
+\begin{figure*}
+    \includegraphics[width=\textwidth]{Channels_Horizontal.pdf}
+    \caption{Set of images to exemplify how degradation affects the AIA channels. The two sets are composed of seven images from different EUV channels. From left to right: AIA $94$~\AA, AIA $131$~\AA, AIA $304$~\AA, AIA $335$~\AA, AIA $171$~\AA, AIA $193$~\AA, and AIA $211$~\AA. The top row corresponds to images from May $13^{th}$, $2010$ and the bottom row shows images from August $31^{st}$, $2019$, with no degradation correction. The $304$~\AA~channel images are in log-scale due the severe degradation.}
     \label{fig:autocalibrate_model_problem}
 \end{figure*}
 
-NASA currently manages the Heliophysics System Observatory (HSO), which consists of a group of satellites constantly monitoring the Sun, its extended atmosphere, space environments around the Earth and other planets of the solar system \citep{HSO}. One of the flagship missions of HSO is NASA's Solar Dynamics Observatory (SDO) \citep{SDO_primary}. Launched in 2010, SDO has been instrumental in monitoring the Sun's activity and providing valuable scientific data every day with a high temporal and spatial resolution. It has three instruments onboard: the Atmospheric Imaging Assembly (AIA) \citep{AIA}, which records high spatial and temporal resolution ultraviolet (UV) and extreme UV (EUV) images of the Sun; the Helioseismic \& Magnetic Imager (HMI) \citep{HMI}, providing context high-resolution magnetograms; and the EUV Variability Experiment (EVE) \citep{EVE}, which measures the solar EUV spectral irradiance.
+NASA currently manages the Heliophysics System Observatory (HSO), which consists of a group of satellites that constantly monitor the Sun, its extended atmosphere, space environments around the Earth and other planets of the solar system \citep{HSO}. One of the flagship missions of HSO is the Solar Dynamics Observatory \citep[SDO, ][]{SDO_primary}. Launched in $2010$, SDO has been instrumental in monitoring the Sun's activity, and providing a high volume of valuable scientific data every day with a high temporal and spatial resolution. It has three instruments onboard: the Atmospheric Imaging Assembly \citep[AIA,][]{AIA}, which records high spatial and temporal resolution images of the Sun in  ultraviolet (UV) and extreme UV (EUV) spectra; the Helioseismic \& Magnetic Imager \citep[HMI,][]{HMI}, that provides maps of the  photospheric magnetic field, solar surface velocity and continuum filtergrams; and the EUV Variability Experiment \citep[EVE,][]{EVE}, which measures the solar EUV spectral irradiance.
 
-Over the past decade, SDO has played a central role in advancing our understanding of the fundamental plasma processes governing the Sun and space weather. This success can mainly be attributed to the open-data policy and a consistent high data-rate of approximately two terabytes of scientific data per day. The large volume of data accumulated over the past decade (over 12 petabytes) provides a fertile ground to develop and apply new data processing methods that can further expand the capabilities of SDO.
+Over the past decade, SDO has played a central role in advancing our understanding of the fundamental plasma processes governing the Sun and space weather. This success can mainly be attributed to its open-data policy and a consistent high data-rate of approximately two terabytes of scientific data per day. The large volume of data accumulated over the past decade (over 12 petabytes) provides a fertile ground to develop and apply novel machine learning (ML) based data processing methods. Recent studies, such as, predicting solar flares from HMI vector magnetic fields \citep{Bobra_2015}, creating high-fidelity virtual observations of the solar corona \citep[\citealt{salvatelli2019} \&][]{Cheung2019}, forecasting far side magnetograms from the Solar Terrestrial Relations Observatory \citep[STEREO, ][]{Kaiser_2008} EUV images \citep{Kim_NatAs_2019}, super-resolution of magnetograms \citep{jungbluth-2019-super}, and mapping EUV images from AIA to spectral irradiance measurements \citep{Szenicereaaw6548}, have demonstrated the immense potential of ML applications in solar and heliophysics. In this paper, we leverage the availability of such high quality continuous observations from SDO and apply advanced machine learning algorithms to address the instrument calibration problem.
+%Developments such as these prompt us to ask: can we apply advanced machine learning algorithms to further expand the capabilities of SDO? 
+%In this paper, we specifically consider one of the key issues that limits the diagnostic capability of the SDO-AIA instrument, instrument degradation, and help address it with the aid of ML.
 
-In Figure \ref{fig:autocalibrate_model_problem} there are sample images from the seven EUV channels in AIA. On the top row we observe the first images captured by AIA, in May $13^{th}$ of 2010, and in the bottom row the images captured more recently in August $31^{st}$, 2019. It is possible to observe the more recent images are dimmer than the first ones obtained by AIA, more intensly in 304~\AA~ channel, even though plotted in the same intensity range. This effect is due to the temporal degradation EUV instruments suffer. These instruments in space are known to suffer degradation, which diminishes overall instrument sensitivity with time~\citep[e.g.,][]{BenMoussa_etal_2013}. The possible causes include the out-gassing of organic materials in the telescope structure \citep{Jiao_2019}, which may deposit on optical elements or the decrease in detector sensitivity due to exposure to EUV radiation. In general, first-principles models predicting the sensitivity degradation as functions of time and wavelength are not sufficiently well-constrained for maintaining the scientific calibration of the instruments. Instrument teams have, therefore, traditionally relied on empirical techniques, such as relying on sources with known fluxes. However, there are no standard candles on the Sun at these wavelengths. Quiet Sun EUV brightness is variable depending on the configuration of the small-scale fields. Furthermore, the quiet Sun may be too dim in some EUV channels (e.g., the 94~\AA\ channel in AIA). Active regions (ARs) are brighter than the quiet Sun, but EUV fluxes from ARs can vary by orders of magnitude depending on whether the AR is emerging, flaring or decaying, and on the AR's magnetic complexity.
+One of the crucial issues that limit the diagnostic capabilities of SDO-AIA mission is the degradation in the quality of its recorded images over time. Sample images from the seven AIA EUV channels in Fig.~\ref{fig:autocalibrate_model_problem} show an example of such a deterioration. The top row shows the images observed during the early days of the mission, from 13 May 2010, and the bottom row shows the corresponding images observed more recently on 31 August 2019, scaled within the same intensity range. It is clear that the images in the bottom row appear to be significantly dimmer compared to their top row counterparts. In some channels, especially 304~\AA\ and 335~\AA\, the effect is pronounced. 
+%Comparing the images from the two rows, it is clear that the bottom row appears to be dimmer than its top row counterpart and the effect is quite pronounced especially for the AIA $304$~\AA\ and $335$~\AA\ channels. 
+The dimming effect observed among the channels is due to the temporal degradation of that EUV instruments in space, that is also known to diminish the overall instrument sensitivity with time~\citep[e.g.,][]{BenMoussa_etal_2013}. The possible causes include either the out-gassing of organic materials in the telescope structure, which may deposit on the optical elements \citep{Jiao_2019}, or the decrease in detector sensitivity due to exposure to EUV radiation from the Sun. 
 
- Current methods to compensate for this degradation include sounding rocket experiments \citep{EVE_rocket} that use a near-replica of the instrument on-board SDO to gather a calibrated observation spanning the short interval of the suborbital flight (a few minutes). A comparison of the sounding rocket observation with the orbital satellite’s observation provides an updated calibration, revealing long-term trends in the sensitivities of EVE and AIA. Sounding rockets are undoubtedly crucial. However, the sparse temporal coverage and the complexities of intercalibration are also sources of uncertainty inter-instrument calibration. Moreover, it may not be practical for missions in deep space \citep[e.g., STEREO,][]{Kaiser_2008}.
+In general, first-principle models predicting the sensitivity degradation as functions of time and wavelength are not sufficiently well-constrained for maintaining the scientific calibration of such instruments.To circumvent the problem, instrument scientists have traditionally relied on empirical techniques, such as considering sources with known fluxes or the so-called "standard candles". However no standard candles exist on the solar atmosphere at these wavelengths since the solar corona is highly dynamic and the plasma traces out complex magnetic field lines at least a million Kelvin. This causes even the quiet Sun brightness in the EUV channels to vary significantly depending on the configuration of the small-scale magnetic fields \citep[][and the references therein]{2015A&A...581A..51S}. On one hand, the Sun may not be bright enough to appear in the hotter EUV channels such as AIA 94~\AA\,. On the other hand, active regions (ARs) have EUV fluxes that can vary by several orders of magnitude depending on whether it is in an emerging, a flaring or a decaying state. Moreover, the brightness depends on the complexity of the AR's  magnetic field \citep{2015LRSP...12....1V}. Finally, ARs in the solar corona can evolve on the time scales ranging from a few minutes to several hours, leading to obvious difficulties in obtaining a standard flux for the purpose of calibration. 
+
+Current state-of-the-art methods to compensate for this degradation, rely on cross-calibration between AIA and EVE instruments. The calibrated measurement of the full-disk solar spectral irradiance from EVE is passed through the AIA wavelength (filter) response function, to predict the integrated AIA signal over the full field of view. Later, the predicted band irradiance is compared with the actual AIA observations \citep{Boerner2013}. The absolute calibration of SDO-EVE is maintained through periodic sounding rocket experiments \citep{EVE_rocket} that use a near-replica of the instrument on-board SDO to gather a calibrated observation spanning the short interval of the suborbital flight (lasting a few minutes). A comparison of the sounding rocket observation with the satellite instrument observation provides an updated calibration, revealing long-term trends in the sensitivities of EVE and, thus, of AIA. 
+
+Sounding rockets are undoubtedly crucial; however, the sparse temporal coverage (there are flights roughly every 2 years), and the complexities of inter-calibration are also potential sources of uncertainty in the inter-instrument calibration. Moreover, the inter-calibration analysis has long latencies, of months and sometime years, between the flights and when the calibration can be updated, due to data analysis of the obtained data during the flight; also this kind of calibration are limited to observations from the Earth, and thus cannot easily be used to calibrate missions in deep space (e.g., STEREO).
+
+In this paper, we focus on automating the correction of the sensitivity degradation of different AIA wavebands by using exclusively AIA information and adopting a deep neural network \citep[DNN, ][]{goodfellow2016deep} approach, that exploits the spatial patterns and cross-spectral correlations among the observed solar features in multi-wavelength observations of AIA. We compare our approach with a non-ML method based on solar physics knowledge, referred to as in the following as the baseline, and further evaluate the predicted degradation curves with the ones obtained through the sounding rocket cross-calibration described above. At the best of our knowledge this is the first attempt of developing a calibration method of this kind.  We presented an early-stage results of this work at Neural Information Processing Systems 2019 \citep[NeurIPS 2019, ][]{neuberg2019} where we described some preliminary results in this direction. However, that analysis did not address several important issues which are discussed in this paper, such as the performance on the real degradation curve and the limitations of the presented models, that are both crucial to evaluate the applicability of this neural network based technique. The approach developed in this work could potentially remove a major impediment to developing future HSO missions that can deliver solar observations from different vantage points beyond the Earth's orbit.
  
- The application of machine learning (ML) \citep{bishop2006pattern} has gained momentum in the space weather community and it is driving an intense development of automated technologies to improve data processing, and assimilation in solar physics. Recent studies including, predicting solar flares from HMI vector magnetic fields \citep{Bobra_2015}, creating high-fidelity virtual observations of the solar corona \citep[\citealt{salvatelli2019} \&][]{Cheung2019}, forecasting far side magnetograms from STEREO EUV images \citep{Kim_NatAs_2019}, super-resolution of magnetograms \citep{jungbluth-2019-super}, mapping EUV images from AIA to spectral irradiance measurements \citep{Szenicereaaw6548} and the early stages of this project \citep{neuberg2019} have demonstrated the immense potential of ML applications in solar and heliophysics. In this paper, we focus on automating the correction of the sensitivity degradation of different AIA wavebands by using a deep neural network \citep{goodfellow2016deep} that exploits spatial patterns and cross-spectral correlations in multi-wavelength observations. The approach developed in this work removes a significant impediment to developing future HSO missions that can deliver solar observations from different vantage points beyond Earth-orbit.
+The paper is structured as follows: in Section \ref{Section:data}, we present and describe our data set. In Section \ref{section:methodology} we illustrate the technique and how it has been developed. Namely, in \S~\ref{section:formulation} we state the hypothesis and propose a formulation of the problem , in \S~\ref{section:convolutional} we present the CNN models, in \S~\ref{Section:Analysis} we describe the training process and the evaluation, in \S~\ref{section:inter_channel} we probe the multi-channel relationship and in  \S~\ref{section:model-benchmark-understanding} we reconstruct the temporal degradation curve. Furthermore, in Section \ref{section:baseline} we present the baseline, followed by Section \ref{Section:Results} where we present and discuss the results. The concluding remarks are discussed in Section \ref{section:summary}.
  
-This paper is structured as follows: In Section \ref{Section:data}, we present and describe our data set used, in section \ref{section:methodology} we formulate the problem (\S~\ref{section:formulation}), present the CNN model(\S~\ref{section:convolutional}), probe the multi-channel relationship (\S~\ref{section:inter_channel}) and explain the training process and evaluation (\S~\ref{Section:Analysis}). In section \ref{section:baseline} we present the baseline, followed by section \ref{Section:Results} where we present the results and discussions. The conclusion and summary is in section \ref{section:summary}.
- 
-\section{Data description}
+\section{Data description and pre-processing}
 \label{Section:data}
 
-We use the pre-processed SDO/AIA dataset from \citet{SDOML} (hereafter referred to as SDOML). This dataset is ML-ready to be used for any kind of application related to the AIA and HMI data and consists of a subset of the original SDO data dating from 2010 to 2018. It comprises of the $7$~EUV channels, $2$~UV channels from AIA and vector magnetograms from HMI. The data from both the instruments have been spatially aligned, and have identical temporal sampling with a spatial sampling of $\thicksim$ $4\farcs8$ per pixel. Data from the three SDO instruments are temporally aligned, with cadences chosen to be 6 minutes for AIA (instead of the original 12 seconds) and EVE, and 12 minutes for HMI. The full disk images were downsampled from 4096 $\times$ 4096 to 512 $\times$ 512 pixels to have a more manageable data set.
+We use for this study the pre-processed SDO-AIA dataset from \citet[][hereafter referred to as SDOML]{SDOML}. This dataset is ML-ready to be used for any kind of application related to the AIA and HMI data and it consists of a subset of the original SDO data ranging from $2010$ to $2018$. It comprises of the $7$~EUV channels, $2$~UV channels from AIA and vector magnetograms from HMI. The data from the two SDO instruments are temporally aligned, with cadences chosen to be $6$ minutes for AIA (instead of the original $12$ seconds) and EVE, and $12$ minutes for HMI. The full disk images are downsampled from $4096 \times 4096$ to $512 \times 512$ pixels and have identical spatial sampling of $\thicksim$ $4\farcs8$ per pixel. 
 
-AIA images have been normalized by exposure time and corrected for instrumental degradation over time \citep[using V8 degradation curve from sounding rocket experiments,][]{Boerner2013}. Consequently, the resulting dataset offers images where changes in pixel brightness are directly related with the state of the Sun, rather than instrument performance.
+In SDOML the AIA images have been compensated for the exposure time and corrected for instrumental degradation over time using the V8 corrections released by the AIA team in November 2017. These corrections are based on cross-calibration with SDO-EVE, where the EVE calibration is maintained by periodic sounding rocket under flights (including, in the case of the V8 corrections, a flight in 1 June 2016). Consequently, the resulting dataset offers images where changes in pixel brightness are directly related with the state of the Sun rather than instrument performance.
 
-In this study, we re-sample the SDOML dataset and scale it further down to $256\times256$ pixels from $512\times512$ pixels. This enabled to  speed-up the processing and iteration times in our development of the new ML technique, besides allowing us to conserve the necessary computational resources. We also masked the off-limb signal ($r>R_\odot$) to avoid possible contaminating due to effects of telescope vignetting. In addition, we also re-scaled the brightness intensity of each AIA channel by dividing the images by a channel-wise constant factor. These factors represent the approximate median brightness in each channel and across the full time period \citep[derived from][]{SDOML}, and this process is implemented to set the brightness close to unity that makes numerical computation in the CNN much more stable. This is helpful especially in the back-propagation of the parameter values. It is a standard practice in CNNs, see for example Chapter 6 of \citep[][]{goodfellow2016deep}. The specific values for each channel are reported in Appendix~\ref{section:appendix_average}.
+In this paper, we applied a few additional pre-processing steps. First, we re-sampled the SDOML dataset and scale it further down to $256\times256$ pixels from $512\times512$ pixels. We established that $256\times256$ is a sufficient resolution for the predictive task of interest (inference of a single coefficient) and the reduced size enabled a quicker processing and a more efficient use of the computational resources. Secondly, we masked the off-limb signal ($r>R_\odot$) to avoid possible contamination due to the telescope softening or shading away the edges of the images. Finally, we re-scaled the brightness intensity of each AIA channel by dividing the images intensity by a channel-wise constant factor. These factors represent the approximate average AIA data counts in each channel and across the period from 2011 to 2018 \citep[derived from][]{SDOML}, and this re-scaling is implemented to set the average pixel values close to unity in order to improve the numerical stability and the training speed up of the CNN. Data normalization such as this is standard practice in NNs \citep{goodfellow2016deep}. The specific values for each channel are reported in Appendix~\ref{section:appendix_average}.
 
 \section{Methodology}
 \label{section:methodology}
 \subsection{Formulation of the problem}
 \label{section:formulation}
-The approach to the problem is explained as follows. We consider a set $\vec{C} = \{C_i, i\in [1,...,n]\}$ of multi-channel, synchronous SDO/AIA images where $C_i$ denotes the $i$-th channel image in the set. Further we create a corresponding set of dimmed images as $\mathbf{\alpha} \vec{C} = \{\alpha_i C_i, i\in [1,...,n]\}$, where each dimming factor $\alpha_i$ is independently sampled from a uniform distribution between [$0.01, 1.0$]. We choose a maximum $\alpha$ =1 since we only consider dimming of the images and not enhancements. It is also to be noted that the dimming factors $\alpha_i$ are applied uniformly per channel and are not spatially dependent. The spatial dependence portion of the degradation is assumed to be accounted for by regularly updated flat-fields applied to AIA images. The goal is to find a deep learning model $M: \vec{C} \rightarrow \mathbf{\alpha}$, i.e. a deep learning model that retrieves the set of multi-channel dimming factors from observed SDO/AIA images $\vec{C}$.
+It is known that some bright structures in the Sun are observed across different wavelengths. Figure \ref{fig:morphology} shows a good example from $07$ April $2015$ of a bright structure in the center of all seven EUV channels from AIA. Based on this cross-channel structure, we establish an hypothesis divided in two parts. First is that there is a relationship between the morphological features and the brightness of solar structures in a single channel (e.g., typically, dense and hot loops over active regions). Second is that such relationship between the morphological features and the brightness of solar structures can be found across multiple channels of AIA. We hypothesize that both these relationships can be used to estimate the dimming factors and that a deep learning model can automatically learn these inter and cross-channel patterns and exploit them for accurately predicting the dimming factor of each channel. 
+
+\begin{figure*}
+    \includegraphics[width=\textwidth]{Morphology_AIA.pdf}
+    \caption{A co-located set of images of the seven EUV channels of AIA to exemplify structures that are observed across different wavelengths. From left to right: AIA $94$~\AA, AIA $131$~\AA, AIA $304$~\AA, AIA $335$~\AA, AIA $171$~\AA, AIA $193$~\AA, and AIA $211$~\AA.}
+    \label{fig:morphology}
+\end{figure*}
+
+To test our hypothesis we consider a vector $\vec{C} = \{C_i, i\in [1,...,n]\}$ of multi-channel, synchronous SDO/AIA images, where $C_i$ denotes the $i$-th channel image in the vector, and a vector $\vec{\alpha} = \{\alpha_i, i \in [1,...,n]\}$, where $\alpha_i$ is the dimming factor independently sampled from a uniform distribution between [$0.01, 1.0$]. We choose an upper bound value of  $\alpha_i = 1$, since we only consider dimming of the images and not enhancements. Further we create a corresponding vector of dimmed images as $\vec{D} = \{\alpha_i C_i, i\in [1,...,n]\}$, where $\vec{D}$ is the corresponding dimmed vector. It is also to be noted that the dimming factors $\alpha_i$ are applied uniformly per channel and are not spatially dependent. The spatial dependence of the degradation is assumed to be accounted for by regularly updated flat-field corrections applied to AIA images. Our goal in this paper is to find a deep learning model $M: \vec{D} \rightarrow \vec{\alpha}$ that retrieves the vector of multi-channel dimming factors $\vec{\alpha}$ from the observed SDO-AIA vector $\vec{D}$. 
+% We presented an early-stage work at Neural Information Processing Systems 2019 \citep[NeurIPS 2019, ][]{neuberg2019} where we described some preliminary results in this direction. However, that analysis did not address several important issues which are discussed in this paper, such as the performance on the real degradation curve and the limitations of the presented models, that are both crucial to evaluate the applicability of this neural network based technique.
 
 \subsection{Convolutional Neural Network Model}
 \label{section:convolutional}
-Deep learning is a very active sub-field of machine learning that focuses on specific models called deep neural networks (DNNs).A DNN is a composition of multiple layers of linear transformations and non-linear element-wise "activation" functions \citep{goodfellow2016deep}. One of the main qualities of deep learning is that it can learn from the data the best feature representation for a given task, without the need to manually engineer features. DNNs have produced state-of-the-art results in many complex tasks including object detection in images \citep{he2016deep}, speech recognition \citep{amodei2016deep} and synthesis \citep{oord2016wavenet}, and translation between languages \citep{wu2016google}. A DNN expresses a differentiable function $F_{\mathbf\theta}: \mathcal{X} \to \mathcal{Y}$ that can be fitted to perform complex non-linear transformations, by tuning parameters $\vec{\theta}$ using gradient-based optimization of a loss (also known as objective or error) function $L(\vec{\theta}) = \sum_i l(F_{\vec\theta}(\vec{x}_i), \vec{y}_i)$ for a given set of inputs and desired outputs $\{\vec{x}_i, \vec{y}_i\}$.
+Deep learning is a very active sub-field of machine learning that focuses on specific models called deep neural networks (DNNs). A DNN is a composition of multiple layers of linear transformations and non-linear element-wise functions \citep{goodfellow2016deep}. One of the main advantages of deep learning is that it can learn from the data the best feature representation for a given task, without the need to manually engineer such features. DNNs have produced state-of-the-art results in many complex tasks including object detection in images \citep{he2016deep}, speech recognition \citep{amodei2016deep} and synthesis \citep{oord2016wavenet}, translation between languages \citep{wu2016google}. A DNN expresses a differentiable function $F_{\vec\theta}: \mathcal{X} \to \mathcal{Y}$ that can be trained to perform complex non-linear transformations, by tuning parameters $\vec{\theta}$ using gradient-based optimization of a loss (also known as objective or error) function $L(\vec{\theta}) = \sum_i l(F_{\vec\theta}(\vec{x}_i), \vec{y}_i)$ for a given set of inputs and desired outputs $\{\vec{x}_i, \vec{y}_i\}$.
 
-For the degradation problem summarized in Section~\ref{section:formulation}, we consider two CNNs architecture \citep{lecun1995convolutional} --one that  doesn't exploit the spatial dependence across multi-channel AIA images and a second that does. The first model considers a single channel as input in the form of $(1,256, 256)$, where \textit{S} is the resolution of the image, whereas the second model takes in multiple AIA channel images at the same time as input in the form of $(n, 256, 256)$, where \textit{n} is the number of channels as indicated in Fig.~\ref{fig:autocalibrate_CNN_arch}. 
+For the degradation problem summarized in Section~\ref{section:formulation}, we consider two CNNs architectures \citep{lecun1995convolutional}. The first architecture does not exploit the spatial dependence across multi-channel AIA images, therefore ignoring any possible relationship that different AIA channels might have, and it is designed to explore only the relationship across different structures in a single channel. This architecture is a test for the first hypothesis in Section~\ref{section:formulation}. The second architecture is instead designed to exploit possible cross-channel relationships while training and it tests our second hypothesis, that solar surface features appearing across the different channels will make a  multi-channel CNN architecture more effective than a single channel CNN that only exploit inter-channel structure correlations. The first model considers a single channel as input in the form of a tensor with shape $1\times256\times256$ and have a single degradation factor $\alpha$ as output. The second model takes in multiple AIA channel images simultaneously as an input with shape $n\times256\times256$ and output $n$ degradation factors $\vec{\alpha} = \{\alpha_i, i \in [1,...,n]\}$, where $n$ is the number of channels as indicated in Fig.~\ref{fig:autocalibrate_CNN_arch}.  
 
-We exploit the hypothesis that a relationship exists between the spatial morphological features and the brightness of solar structures across single or multiple channels of AIA, that can then be used to accurately estimate the dimming factors. The first model ignores any possible relationship that different AIA channels might have, exploring only relationship across structures in a single channel, whereas the second one could exploit multi-channel correlations while training.
-
-\begin{figure}[h]
+\begin{figure}
     \centering
-        \includegraphics[height=2.7in]{archs_combined.pdf}
-        \caption{The CNN architectures composed of two blocks of a convolutional layer, max pooling layer and a ReLU activation function, followed by a fully connected (FC) layer and a final sigmoid activation function.}
+        \includegraphics[width=0.5\textwidth]{my_arch_one.png}
+        \includegraphics[width=0.5\textwidth]{my_arch_multi.png}
+        \caption{The CNN architectures used in this paper. At the top the single channel architecture with a single wavelength input and composed of two blocks of a convolutional layer, ReLU activation function and max pooling layer, followed by a fully connected (FC) layer and a final sigmoid activation function. At the bottom the multi channel architecture with a multi wavelength input and composed of two blocks of a convolutional layer, ReLU activation function and max pooling layer, followed by a fully connected (FC) layer and a final sigmoid activation function. Figures constructed with \cite{haris_iqbal_2018_2526396}}
         \label{fig:autocalibrate_CNN_arch}
 \end{figure}
 	
-The architecture of the CNNs (Fig. \ref{fig:autocalibrate_CNN_arch}) consists of two blocks of a convolutional layer, a max pooling layer and a ReLU(Rectified Linear Units) activation function \citep{Nair:2010:RLU:3104322.3104425}, followed by a fully connected (FC) layer, and a final sigmoid activation function. The first convolution block has 64 filters, while the second convolution block has 128. Both convolution layers use stride $ = $ 1, padding $ = $ 0, and kernel size of $3\times3$. The final configurations of the models' architectures were obtained through a grid search among different parameters and layers' configuration. 
+The single and multi-channel architectures are described in (Fig.~\ref{fig:autocalibrate_CNN_arch}). They both consist of two blocks of a convolutional layer, followed by a ReLU (rectified linear units) activation function \citep{Nair:2010:RLU:3104322.3104425} and a max pooling layer. Followed by a fully connected (FC) layer. A final sigmoid activation function is used to output the dimming factor. The first convolution block has 64 filters, while the second convolution block has 128. In both convolution layers the kernel size is $3$, that means the filters applied on the image are matrices $3\times3$ pixels, and the stride is $1$, that means each filter is shifted of 1 pixel on the image. No padding is applied (i.e. no additional pixels are added at the border of the image to avoid a change in size). The resulting total learnable parameters (LP) are $167,809$ for the single channel model and $731,143$ for the multi-channel model. The final configurations of the models' architectures were obtained through a grid search among different parameters and layers' configuration. More details of the architectures can be found at the Appendix \ref{section:appendix_archtectures}. 
 
-Each CNN model takes \textit{n} (n=1 for the single channel) AIA wavelength channels as input and computes a vector of degradation factors, one for each input channel, as represented in the schematic on  Fig.~\ref{fig:autocalibrate_CNN_arch}. The second hypothesis tested here is that the multi-channel CNN can learn more effectively than a single channel CNN by simultaneously accounting for solar surface features appearing across the different channels. 
+% Each CNN model takes \textit{n} ($n=1$ for the single channel) AIA wavelength channels as input and computes a vector of degradation factors $\vec{\alpha} = \{\alpha_i, i \in [1,...,n]\}$, one for each input channel, as represented in the schematic on  Fig.~\ref{fig:autocalibrate_CNN_arch}.
 
-We use the open-source software library named PyTorch \citep{paszke_2017} for both training and inference purposes of the CNN.
+We use the open-source software library PyTorch \citep{paszke_2017} for both training and inference purposes of the CNN.
 
-\subsection{Probing the multi-channel relationship with a toy model}
+\subsection{Training and Evaluation Metric}
+\label{Section:Analysis}
+The actual degraded factors $\alpha_i(t)$ (where $t$ is the time since the beginning of the SDO mission, and $i$ is the channel) trace a single trajectory in an $n$-dimensional space starting with $\alpha_i(t=0)=1$ $\forall$ $i\in[1,...,n]$ at the beginning of the mission. During training, we intentionally exclude this time-dependence from the model. This is done by ($1$) using the SDOML dataset which has already been corrected for degradation effects, ($2$) not assuming any relation between $t$ and $\vec{\alpha}$ and not using $t$ as an input feature, and ($3$) temporally shuffling the data used for training. As presented in section \ref{section:formulation}, we degrade the each set of multi-channel images~$\vec{C}$ by a unique $\vec{\alpha} = \{\alpha_i, i \in [1,...,n]\}$. We then devised a strategy such that from one training epoch to the next, the same set of multi-channel images can be dimmed by a completely independent set of $\vec{\alpha}$ dimming factors. This is a data augmentation procedure which allows the model to generalize and be efficient in recovering dimming factors over a wide range of solar conditions.
+
+The training set comprises of multi-channel images~$\vec{C}$ obtained during the months of January to July from $2010$ to $2013$ obtained every six hours, amounting to a total of $18,970$ images in $2,710$ timestamps. We used the Adam optimizer \citep{Optimizer} in our training with an initial learning rate of $0.001$ and the mean squared error (MSE) of the the predicted degradation factor ($\alpha_P$) and the ground truth value ($\alpha_{GT}$) was used as a loss (cost) function. The model was trained using 64 samples per batch and the training has been performed for $1,000$ epochs.
+
+The test dataset, i.e., the sample of data used to provide an unbiased evaluation of a model fit on the training dataset, holds images obtained during the months of August to October between $2010$ and $2013$, again every six hours per day, totaling $9,422$ images over $1,346$ timestamps. The split by month between the training and test data has a two fold objective: ($1$) it prevents the bias due to the variation in the solar cycle thereby allowing the model to be deployed in future deep space missions forecasting $\alpha$ for future time steps, and ($2$) it ensures that the same image is never present in both the data sets (sub-sequential images will approximately be the same), leading to a more precise and a comprehensive evaluation metric.
+
+ The results of the learning algorithm are binarized using five different thresholds: the absolute value of $0.05$ and relative values of $5\%$, $10\%$, $15\%$, and $20\%$. If the $|\alpha_P - \alpha_{GT} |$ is smaller than the threshold, it is considered a success $\alpha_P$; otherwise, it is not a success. We then evaluate the binarized results by using the success rate, which is the ratio of success $\alpha_P$ and total amount of $\alpha_{P}$. We chose different success rate thresholds to gauge model, all of which are smaller than the uncertainty of the AIA calibration \citep[estimated as $28\%$ by ][]{AIA_calib_paper}.
+ 
+ \subsection{Toy Model Formulation to Probe the Multi-Channel Relationship}
 
 \label{section:inter_channel}
 
 % The reason that motivates the choice of a deep learning approach to solve this problem is that a , that can be learned through data and be used to infer the dimming factors accurately. 
 
-In order to test the hypothesis that a physical relationship between the morphology and brightness of solar structures (e.g., active regions, coronal holes) across multiple AIA channels would help the model prediction, we generated artificial solar images, in which a 2D Gaussian profile is used (Equation \ref{E-relationship}) to mimic the Sun as an idealized bright disk with some center-to-limb variation:
+Using the described CNN model, we tested the hypothesis using a toy dataset, which is simpler than the SDOML dataset. We tested if the physical relationship between the morphology and brightness of solar structures (e.g., active regions, coronal holes) across multiple AIA channels would help the model prediction. For this purpose, we created artificial solar images, in which a $2$D Gaussian profile is used (Equation \ref{E-relationship}) to mimic the Sun as an idealized bright disk with some center-to-limb variation:
 
 \begin{equation}
 \label{E-relationship}
-    C_i[x,y] = A_i \exp{(-[x^2+y^2]{\sigma^{-2}})},
+    C_i(x,y) = A_i \exp{(-[x^2+y^2]{\sigma^{-2}})},
 \end{equation}
 
-where $A$ is the amplitude centered at (0,0), characteristic width $\sigma$, and $x$ and $y$, are the coordinates at the image. $\sigma$ is sampled from a uniform distribution between 0 and 1. These images are not meant to be a realistic representation of the Sun. However, as formulated in Eq.~\ref{E-relationship}, they include two qualities we posit to be essential for allowing our auto-calibration approach to be effective. The first is the correlation of intensities across wavelength channels (i.e., ARs tend to be bright in multiple channels). The second is the existence of a relationship between the spatial morphology of EUV structures with their brightness. This toy data set is designed so that we can independently test how the presence of (a) a relation between brightness $A_i$ and size $\sigma$, and  (b) a relation between $A_i$ for various channels; and the presence of both (a) and (b) influences performance. To evaluate this test we will use the Mean Squared Error loss (MSE loss) and expect the presence of both (a) and (b) to minimize it.
+where $A$ is the amplitude centered at ($0,0$), characteristic width $\sigma$, and $x$ and $y$, are the coordinates at the image. $\sigma$ is sampled from a uniform distribution between $0$ and $1$. These images are not meant to be a realistic representation of the Sun. However, as formulated in Eq.~\ref{E-relationship}, they include two qualities we posit to be essential for allowing our auto-calibration approach to be effective. The first is the correlation of intensities across wavelength channels (i.e., ARs tend to be bright in multiple channels). The second is the existence of a relationship between the spatial morphology of EUV structures with their brightness. This toy data set is designed so that we can independently test how the presence of (a) a relation between brightness $A_i$ and size $\sigma$, and  (b) a relation between $A_i$ for various channels; and the presence of both (a) and (b) influences performance. To evaluate this test we will use the MSE loss and expect the presence of both (a) and (b) to minimize this loss.
 
-The test result of the multi-channel model with artificial solar images is shown in Table~\ref{table:toy_problem_metrics}. We can see that when $A_0 \propto \sigma$ (linear relation between size and brightness) and $A_i = A_0^i$ (i.e. dependence across channels), the CNN solution delivered minimal MSE loss (top-left cell). Eliminating the inter-channel relationship (i.e., each $A_i$ was randomly chosen) or the relation between brightness $A_i$ and size $\sigma$, the performance suffered increasing the MSE loss. Ultimately, when both $A_i$ and $\sigma_i$ were randomly sampled for all channels, the model performed equivalently to randomly guessing/regressing (bottom-right cell). These experiments confirm our hypothesis and indicate that a multi-channel input solution will outperform a single-channel input model, in presence of relationships between the morphology of solar structures and their brightness across the channels. 
+The test result of the multi-channel model with artificial solar images is shown in Table~\ref{table:toy_problem_metrics}. We can see that when $A_0 \propto \sigma$ (linear relation between size and brightness) and $A_i = A_0^i$ (i.e., dependence across channels), the CNN solution delivered minimal MSE loss (top-left cell). Eliminating the inter-channel relationship (i.e., each $A_i$ was randomly chosen) or the relation between brightness $A_i$ and size $\sigma$, the performance suffered increasing the MSE loss. Ultimately, when both $A_i$ and $\sigma_i$ were randomly sampled for all channels, the model performed equivalently to randomly guessing/regressing (bottom-right cell) and having the greater loss of all tests. These experiments confirm our hypothesis and indicate that a multi-channel input solution will outperform a single-channel input model, in presence of relationships between the morphology of solar structures and their brightness across the channels. 
 
-\begin{table}[h]
+\begin{table}
 \centering
-\caption{The Mean Squared Error (MSE) for all combinations proposed in Section \ref{section:inter_channel}. The top-left cell is for the scenario when there exists a cross-channel correlation and a relation between brightness and size of the artificial Sun. The top-right cell, has is the loss with a cross-channel correlation but not the relation between brightness and size. The bottom left cell has the loss when there is no cross-channel correlation, but it has a relation between brightness and size. The bottom right cell presents the loss when the parameters are freely chosen.}
+\caption{The mean squared error (MSE) for all combinations proposed in Section \ref{section:inter_channel}. The top-left cell is for the scenario when there exists a cross-channel correlation and a relation between brightness and size of the artificial Sun. The top-right cell, has is the loss with a cross-channel correlation but not the relation between brightness and size. The bottom left cell has the loss when there is no cross-channel correlation, but it has a relation between brightness and size. The bottom right cell presents the loss when the parameters are freely chosen.}
 \label{table:toy_problem_metrics}
 \begin{tabular}{|cc|c|l|}
 \hline
@@ -159,60 +214,50 @@ The test result of the multi-channel model with artificial solar images is shown
 \multicolumn{1}{|c|}{} & No & 0.027 & 0.065 \\ \hline
 \end{tabular}%
 \end{table}
+ 
+\subsection{Reconstruction of the Degradation Curve using the CNN Models}
+\label{section:model-benchmark-understanding}
+ 
+In order to test the model in different data from the training and testing process, we use both single-channel and multi-channel CNN architectures to recover the instrumental degradation over entire period of SDO(from $2010$ to $2020$). To produce the degradation curve for both CNN models we use an equivalent dataset of the SDOML dataset but without compensating the images for degradation and having data from $2010$ to $2020$. All other pre-processing steps including masking the solar limb, re-scaling the intensity etc. remain unchanged. The CNN's estimates of degradation are then compared to the degradation estimates obtained from cross-calibration with irradiance measurements, computed by the AIA team using the technique described in \citep{Boerner2013}.
 
-\subsection{Data Splitting, Evaluation Metric and Training}
-\label{Section:Analysis}
-The actual dimming factors $\alpha_i(t)$ (where $t$ is the time since the beginning of the SDO mission) trace a single trajectory in an $n$-dimensional space starting with $\alpha_i(t=0)=1$ $\forall$ $i\in[1,...,n]$ at the beginning of the mission. During training, we intentionally exclude this time-dependence from the model. This is done by (1)~using the SDOML dataset which has already been corrected for degradation effects, (2) not assuming any relation between $t$ and $\mathbf{\alpha}$ and not using $t$ as an input feature, and (3) temporally shuffling the data used for training.
+The cross-calibration degradation curve relies on the daily ratio of AIA observed signal to the AIA signal predicted by SDO-EVE measurements up through the end of EVE MEGS-A operations in May $2014$. From May $2014$ onwards, the ratio is computed using the FISM model \citep{Chamberlin2020} in place of the EVE spectra. FISM is tuned to SDO-EVE, so the degradation derived from FISM agrees with the degradation derived from EVE through $2014$. However, the uncertainty in the correction derived from FISM is greater than that derived from EVE observations, primarily due to the reduced spectral resolution and fidelity of FISM compared to SDO-EVE. While the EVE-to-AIA cross-calibration introduced errors of approximately $4\%$ (on top of the calibration uncertainty intrinsic to EVE itself), the FISM-to-AIA cross-calibration has errors as large as $25\%$. 
 
-The training set comprises of multi-channel images~$\mathbf{C}$ obtained during the months of January to August from 2010 to 2013 (three years) obtained every 6 hours (per day), amounting to a total of $18970$ images in $2710$ timestamps. We devised a strategy such that from one training epoch to the next, the same set of multi-channel images $\mathbf{C}$ can be dimmed by a completely independent set of $\mathbf{\alpha}$ dimming factors. This is a data augmentation procedure which allows the model to generalize and be efficient in recovering dimming factors over a wide range of solar conditions.  We used the Adam optimizer \citep{Optimizer} in our training with an initial learning rate of $0.001$ and the mean squared error (MSE) of the distance between the predicted degradation factor and the ground truth value was used as a loss (cost) function. The model was trained using 64 samples per batch and the training has been performed over $1000$ epochs.
-
-The validation dataset, or the sample of data used to provide an unbiased evaluation of a model fit on the training dataset, holds images obtained during the months of September to October between  $2010$ and $2013$, again every 6 hours per day, totalling $9422$ images over $1346$ timestamps. The split by month between the training and validation data has a two fold objective --(1) it prevents the bias due to the variation in the solar cycle thereby allowing the model to be deployed in future deep space missions forecasting $\alpha$ for future timesteps, and (2) it ensures that the same image is never present in both the data sets (sub-sequential images will approximately be the same), leading to a more precise and a comprehensive evaluation metric.
-
- After training, the results of the learning algorithm are binarized using five different thresholds: the absolute value of 0.05 and relative values of 5\%, 10\%, 15\%, and 20\%. If the $|\alpha_P - \alpha_{GT} |$ is smaller than the threshold, it is considered correct $\alpha_P$; otherwise, it is incorrect. We then evaluate the binarized results by using the so-called True Positive (TP) rate, which is the ratio of correct $\alpha_P$ and total amount of $\alpha_{P}$. We chose different TP rate thresholds to gauge model success, which all them are smaller than the uncertainty of the AIA degradation \citep[aproximately 25\%, ][]{AIA_calib_paper}.
-
-We also compare the results of the final algorithm against the degradation curves from the years $2013$ to $2020$. 
+We examined both $V8$ and $V9$ of the cross-calibration degradation curve. The major change from $V8$ calibration (released in December $2017$) to $V9$ (July $2020$) is based on the analysis of the EVE calibration sounding rocket flown on $18$ June $2018$. The analysis of this rocket flight resulted in a $20\%$ shift in the $171$~\AA\ channel normalization early in the mission, as well as an adjustment in the trend of all channels during the interval covered by the FISM model (from May $2014$ onwards). The uncertainty of the degradation correction during the period of prior to May $2014$, and on the date of the most recent EVE rocket flight, is dominated by the $\sim10\%$ uncertainty of the EVE measurements themselves. For periods outside of this (particularly periods after the most recent rocket flight), the uncertainty is a combination of the rocket uncertainty and the errors in FISM in the AIA bands (approximately $25\%$).
+ 
+Moreover we obtain and briefly analyze the feature maps from the second max pooling layer from the multi-channel model. Feature map is simply the output of one mathematical filter applied to the input. Looking at the feature maps we expand our understanding of the model operation. This process will help to shine light over the image processing and will provide insight into the internal representations about the combination done from mixing up information from seven different EUV channels into the seven dimming factors.
 
 \section{Baseline Model}
 \label{section:baseline}
 
 We compare our DNN approach to a baseline motivated by the assumption that the EUV intensity outside magnetically active regions and in the quiet Sun is invariant in time 
-\citep[a similar approach is also considered for the in-flight calibration of some UV instruments, e.g.][]{Schule1998}. This approach, which does not depend on  machine learning, allows us to assess our proposed solution and compare the performance of our DNN-based model. 
+\citep[a similar approach is also considered for the in-flight calibration of some UV instruments, e.g.][]{Schule1998}. This approach, which does not depend on  machine learning, allows us to assess our proposed solution and compare the performance of our DNN-based model.
 
 \begin{figure}[h]
     \centering
         \includegraphics[height=3.3in]{hist_demo.pdf}
-        \caption{Histograms (probability density functions) of the pixel values for $304~\AA$  channel. In blue the histogram for the refence image and in red the histogram for the dimmed image. The y-axis is the number of pixels, and the x-axis is the pixel intensity [$DN/px/s$]. The modes are marked with blue and red line for the reference and dimmed images respectively.}
+        \caption{Histograms (probability density functions) of the pixel values for $304$~\AA~  channel. In blue the histogram for the refence image and in red the histogram for the dimmed image. The y-axis is the number of pixels, and the x-axis is the pixel intensity [$DN/px/s$]. The modes are marked with blue and red line for the reference and dimmed images respectively.}
         \label{fig:baseline_histogram}
 \end{figure}
 
-We use exactly the same data processing and splitting approach like the neural network model in Sect.~\ref{Section:Analysis}. From the processed dataset, a set of reference images per channel, $\mathbf{C_{\rm ref}}$, are selected at time $t=t_{\rm ref}$. Since the level of solar activity continuously evolves in time, we only select the regions of the Sun that correspond to low activity, as discussed in the preceding paragraph. The activity is decided based on co-spatial magnetic field maps from HMI and EUV images from AIA. To define these regions, we first pre-process the images by making a square selection with a diagonal $= 2R_\odot$ centered at $R=0$ of the solar images, so as to avoid any limb or LOS projection effects. Further, we apply an absolute global threshold value of  $5$ Mx~cm$^{-2}$ on the HMI LOS magnetic field maps corresponding to $t=t_{\rm ref}$, such that only those pixels that have B$_{\mathrm{LOS}}$ less than the threshold are extracted resulting in a binary mask where the value of $1$ corresponds to the pixels of interest and $0$ the rest. Finally, we use this mask to extract the co-spatial quiet Sun pixels from each AIA channel and compute 1D histograms of the pixel intensity values. Two such histograms are shown in Fig.~\ref{fig:baseline_histogram} for AIA $131$~\AA\ and 304~\AA\, respectively.
+We use exactly the same data processing and splitting approach like the neural network model in Sect.~\ref{Section:Analysis}. From the processed dataset, a set of reference images per channel, ${\vec{C}_{\rm ref}}$, are selected at time $t=t_{\rm ref}$. Since the level of solar activity continuously evolves in time, we only select the regions of the Sun that correspond to low activity, as discussed in the preceding paragraph. The activity is decided based on co-spatial magnetic field maps from HMI and EUV images from AIA. To define these regions, we first pre-process the images by making a square selection with a diagonal $= 2R_\odot$ centered at $R=0$ of the solar images, so as to avoid any limb or LOS projection effects. Further, we apply an absolute global threshold value of  $5$ Mx~cm$^{-2}$ on the HMI LOS magnetic field maps corresponding to $t=t_{\rm ref}$, such that only those pixels that have B$_{\mathrm{LOS}}$ less than the threshold are extracted resulting in a binary mask where the value of $1$ corresponds to the pixels of interest and $0$ the rest. Finally, we use this mask to extract the co-spatial quiet Sun pixels from each AIA channel and compute $1$D histograms of the pixel intensity values. Two such histograms are shown in Fig.~\ref{fig:baseline_histogram} for AIA $304$~\AA\ reference and dimmed image, respectively.
 
-Upon closer investigation, we find that the 1D histograms in Fig.~\ref{fig:baseline_histogram} are non-Gaussian in nature and resemble a log-normal distribution. This is also the case for all the other AIA EUV channels. We use the mode or the most probable value of intensity to define a characteristic value that can be used as a reference denoted by $I_{i,{\rm ref}}^{\rm mp}$, where \textit{i} implies the AIA channel under consideration and \textit{mp} stands for the most probable value of intensity.
-Then, we apply the exact same procedure to a different batch of images each of which were dimmed by a random dimming factor $\alpha_i$ and obtain $I^{\rm mp}_{i}$ as the most probable intensity value from its distribution. Finally, the baseline computes the ration between the two most probable intensity values and obtains the dimming factors according to the following equation:
+Upon closer investigation, we find that the $1$D histograms in Fig.~\ref{fig:baseline_histogram} are non-Gaussian in nature and resemble a log-normal distribution. This is also the case for all the other AIA EUV channels. We use the mode (most probable value) of intensity to define a characteristic value that can be used as a reference denoted by $I_{i,{\rm ref}}^{\rm mp}$, where \textit{i} implies the AIA channel under consideration and \textit{mp} stands for the most probable value of intensity. Then, we apply the exact same procedure to a different batch of images each of which were dimmed by a random dimming factor $\alpha_i$ and obtain $I^{\rm mp}_{i}$ as the most probable intensity value from its distribution. Finally, the baseline computes the ratio between the two most probable intensity values and obtains the dimming factors according to the following equation:
 
 \begin{equation}
     \alpha_i := \frac{I^{\rm mp}_{i}}{I_{i, {\rm ref}}^{\rm mp}}
 \end{equation}
 
-% Each of the images obtained is then compared to the reference image (the image at $t_{ref}<t_{i}$ for each $i$), and for each separate channel.  
-
-% Then, the baseline model estimates the dimming factors according to the following relation: 
-
-% \begin{equation}
-%     \alpha_i := \frac{I^{\rm mp}_{i}}{I_{i, {\rm ref}}^{\rm mp}}
-% \end{equation}
-
-The efficiency of the baseline in recovering the dimming factor is then evaluated according to the TP rate metric and the results for all channels are tabulated in Table~\ref{tab:autocalibrate_final_results}. 
+The efficiency of the baseline in recovering the dimming factor is then evaluated according to the success rate metric and the results for all channels are tabulated in Table~\ref{tab:autocalibrate_final_results}. 
 
 \section{Results and Discussions}
  \label{Section:Results}
 
 \subsection{Comparing the performances of the baseline model with different CNN architectures}
-The baseline, single-channel, and multi-channel model results are summarized in Table~\ref{tab:autocalibrate_final_results}. The different colors are for different TP rates: green is for TP rates greater than 90\%, yellow for TP rate between 80\% and 90\%, and red is for TP rate lower than 80\%. In a overview, the result shows that higher TP rates for the CNN models, particularly for the Multi-Channel model, and for higher tolerances, which is expected.
+The baseline, single-channel, and multi-channel model results are summarized in Table~\ref{tab:autocalibrate_final_results}. The different colors are for different success rates: green is for success rates greater than $90\%$, yellow for success rate between $80\%$ and $90\%$, and red is for success rate lower than $80\%$.
 
-\begin{table*}[ht!]
+\begin{table*}
   \centering
-  \caption{Results of the baseline and CNN models applied to all the EUV AIA channels. The Table is divided in three sections: Baseline, Single Channel and Multi-Channel model. From left, the channel number, the True Positive rates for the baseline, the True Positives rates for the single channel CNN model, and the True Positive rates, for the multi-channel CNN model, each model performance is considered at different tolerance levels. At the bottom, the mean of the True Positive rate across all the channels. Color green is for TP rates greater than 90\%, yellow for TP rate between 80\% and 90\% and red is for TP rate lower than 80\%.}
+  \caption{Results of the baseline and CNN models applied to all the EUV AIA channels. The Table is divided in three sections: Baseline, Single Channel and Multi-Channel model. From left, the channel number, the True Positive rates for the baseline, the True Positives rates for the single channel CNN model, and the True Positive rates, for the multi-channel CNN model, each model performance is considered at different tolerance levels. At the bottom, the mean of the True Positive rate across all the channels. Color green is for success rates greater than $90\%$, yellow for success rate between $80\%$ and $90\%$ and red is for success rate lower than $80\%$.}
   \label{tab:autocalibrate_final_results}
   \centering
   \begin{tabular}{cccccccccccccccc}
@@ -221,83 +266,112 @@ The baseline, single-channel, and multi-channel model results are summarized in 
     \cmidrule(lr){2-6}\cmidrule(lr){7-11}\cmidrule(lr){12-16}
      & 0.05 & 5\% & 10\% & 15\% & 20\% & 0.05 & 5\% & 10\% & 15\% & 20\% & 0.05 & 5\% & 10\% & 15\% & 20\%\\
      \midrule
-     94~\AA  & \zz {28}\% & \zz {08}\% & \zz {16}\% & \zz {26}\% & \zz {37}\% & \zz {70}\% & \zz {37}\% & \zz {61}\% & \zz {78}\% & \zz {87}\% & \zz {82}\% & \zz {48}\% & \zz {73}\% & \zz {85}\% & \zz {92}\% \\
-     131~\AA & \zz {76}\% & \zz {49}\% & \zz {72}\% & \zz {86}\% & \zz {96}\% & \zz {94}\% & \zz {72}\% & \zz {92}\% & \zz {98}\% & \zz {99}\% & \zz {99}\% & \zz {76}\% & \zz {94}\% & \zz {97}\% & \zz {99}\% \\
-     171~\AA & \zz {56}\% & \zz {27}\% & \zz {48}\% & \zz {68}\% & \zz {85}\% & \zz {93}\% & \zz {70}\% & \zz {93}\% & \zz {97}\% & \zz {99}\% & \zz {84}\% & \zz {48}\% & \zz {72}\% & \zz {86}\% & \zz {93}\% \\
-     193~\AA & \zz {42}\% & \zz {13}\% & \zz {28}\% & \zz {43}\% & \zz {53}\% & \zz {73}\% & \zz {41}\% & \zz {69}\% & \zz {85}\% & \zz {93}\% & \zz {90}\% & \zz {59}\% & \zz {85}\% & \zz {94}\% & \zz {98}\% \\
-     211~\AA & \zz {31}\% & \zz {11}\% & \zz {21}\% & \zz {30}\% & \zz {40}\% & \zz {63}\% & \zz {30}\% & \zz {53}\% & \zz {71}\% & \zz {84}\% & \zz {76}\% & \zz {41}\% & \zz {68}\% & \zz {82}\% & \zz {92}\% \\
-     304~\AA & \zz {87}\% & \zz {66}\% & \zz {89}\% & \zz {95}\% & \zz{100}\% & \zz {90}\% & \zz {65}\% & \zz {89}\% & \zz {97}\% & \zz {99}\% & \zz {94}\% & \zz {62}\% & \zz {86}\% & \zz {93}\% & \zz {96}\% \\
-     335~\AA & \zz {37}\% & \zz {14}\% & \zz {29}\% & \zz {42}\% & \zz {51}\% & \zz {62}\% & \zz {31}\% & \zz {54}\% & \zz {69}\% & \zz {80}\% & \zz {73}\% & \zz {39}\% & \zz {65}\% & \zz {82}\% & \zz {91}\% \\
+     94~\AA  & \zz {32}\% & \zz{08}\% & \zz{18}\% & \zz{28}\% & \zz {40}\% & \zz {70}\% & \zz {37}\% & \zz {61}\% & \zz {78}\% & \zz {87}\% & \zz {82}\% & \zz {48}\% & \zz {73}\% & \zz {85}\% & \zz {92}\% \\
+     131~\AA & \zz {76}\% & \zz{50}\% & \zz{73}\% & \zz{86}\% & \zz {96}\% & \zz {94}\% & \zz {72}\% & \zz {92}\% & \zz {98}\% & \zz {99}\% & \zz {99}\% & \zz {76}\% & \zz {94}\% & \zz {97}\% & \zz {99}\% \\
+     171~\AA & \zz {58}\% & \zz{27}\% & \zz{48}\% & \zz{66}\% & \zz {85}\% & \zz {93}\% & \zz {70}\% & \zz {93}\% & \zz {97}\% & \zz {99}\% & \zz {84}\% & \zz {48}\% & \zz {72}\% & \zz {86}\% & \zz {93}\% \\
+     193~\AA & \zz {38}\% & \zz{13}\% & \zz{27}\% & \zz{44}\% & \zz {53}\% & \zz {73}\% & \zz {41}\% & \zz {69}\% & \zz {85}\% & \zz {93}\% & \zz {90}\% & \zz {59}\% & \zz {85}\% & \zz {94}\% & \zz {98}\% \\
+     211~\AA & \zz {31}\% & \zz{11}\% & \zz{21}\% & \zz{29}\% & \zz {39}\% & \zz {63}\% & \zz {30}\% & \zz {53}\% & \zz {71}\% & \zz {84}\% & \zz {76}\% & \zz {41}\% & \zz {68}\% & \zz {82}\% & \zz {92}\% \\
+     304~\AA & \zz {86}\% & \zz{66}\% & \zz{89}\% & \zz{95}\% & \zz{100}\% & \zz {90}\% & \zz {65}\% & \zz {89}\% & \zz {97}\% & \zz {99}\% & \zz {94}\% & \zz {62}\% & \zz {86}\% & \zz {93}\% & \zz {96}\% \\
+     335~\AA & \zz {38}\% & \zz{13}\% & \zz{29}\% & \zz{42}\% & \zz {51}\% & \zz {62}\% & \zz {31}\% & \zz {54}\% & \zz {69}\% & \zz {80}\% & \zz {73}\% & \zz {39}\% & \zz {65}\% & \zz {82}\% & \zz {91}\% \\
      \textbf{Mean} & \textbf{\zz {51}\%} & \textbf{\zz {27}\%} & \textbf{\zz {43}\%} & \textbf{\zz {56}\%} & \textbf{\zz {66}\%} & \textbf{\zz {78}\%} & \textbf{\zz {50}\%} & \textbf{\zz {73}\%} & \textbf{\zz {85}\%} & \textbf{\zz {92}\%} & \textbf{\zz {85}\%} & \textbf{\zz {53}\%} & \textbf{\zz {77}\%} & \textbf{\zz {89}\%} & \textbf{\zz {94}\%} \\
      \bottomrule
   \end{tabular}
 \end{table*}
 
-A detailed look at Table~\ref{tab:autocalibrate_final_results} reveals that for an absolute tolerance value of $0.05$, the best results for the baseline are 87\% (304 \AA) and 76\% (131 \AA), and a mean success rate of $\sim$51\% across all channels. As we increase the relative tolerance levels, the mean TP rate increases from 27\% (for 5\% relative tolerance) to 66\% (with 20\% relative tolerance) and with a 37\% TP rate in the worst performing channel (94 \AA).
+A detailed look at Table~\ref{tab:autocalibrate_final_results} reveals that for an absolute tolerance value of $0.05$, the best results for the baseline are $86\%$ ($304$~\AA) and $76\%$ ($131$~\AA), and a mean success rate of $\sim51\%$ across all channels. As we increase the relative tolerance levels, the mean success rate increases from $27\%$ (for $5\%$ relative tolerance) to $66\%$ (with $20\%$ relative tolerance) and with a $39\%$ success rate in the worst performing channel ($211$~\AA).
 
-Investigating the performance of the CNN architecture with a single input channel and an absolute tolerance level of 0.05, we find that this model performed significantly better than our baseline with much higher values of the metric, for all the channels. The most significant improvement was shown by the 171~\AA\ channel with an increase from $56\%$ in the baseline model to about 93\% in this case, for an absolute tolerance of $0.05$. The average TP rate bumped from 70\% in the baseline to 78\% in the single-channel model. The worst metric for the single-channel CNN architecture was recorded by the 211~\AA\ channel, with a TP rate of just 63\%, which is still significantly better than its baseline counterpart (38\%). Furthermore, with a relative tolerance value of 15\%, we find that the mean TP rate is 85\% for the single-channel mode, which increases to more than 90\% for a 20\% tolerance level. This is a promising result considering the fact that the errors associated with the current state-of-the-art calibration techniques (sounding rockets) is $\sim25\%$.  
+Investigating the performance of the CNN architecture with a single input channel and an absolute tolerance level of $0.05$, we find that this model performed significantly better than our baseline with much higher values of the metric, for all the channels. The most significant improvement was shown by the $94$~\AA~ channel with an increase from $32\%$ in the baseline model to about $70\%$ in the single input CNN model, with an absolute tolerance of $0.05$. The average success rate bumped from $51\%$ in the baseline to $78\%$ in the single-channel model. The worst metric for the single-channel CNN architecture was recorded by the $211$~\AA\ channel, with a success rate of just $63\%$, which is still significantly better than its baseline counterpart ($31\%$). Furthermore, with a relative tolerance value of $15\%$, we find that the mean success rate is $85\%$ for the single-channel model, which increases to more than $90\%$ for a $20\%$ tolerance level. This is a promising result considering the fact that the errors associated with the current state-of-the-art calibration techniques (sounding rockets) is $\sim25\%$.  
 
-Finally, we report the results from the multi-channel CNN architecture in the last section of Table~\ref{tab:autocalibrate_final_results}. As expected, the performance in this case is the best of the lot with significant improvements for almost all the EUV channels. Clearly, the TP rates belonging to the red category is much lesser compared to the former models implying that the mean TP rate is the highest across all tolerance levels. The multi-channel architecture recovers the degradation (dimming) factor for all channels with a TP rate of at least 91\% for a relative tolerance level of 20\% with a mean TP rate of $\sim94\%$. It is also evident that this model outperforms the baseline and the single-channel model for all levels of relative tolerances.  For any given level of tolerance the TP rate is consistently the worst for 335~\AA\ and 211~\AA\ channels whereas the performance of the 131~\AA\ channel is the best.
+Finally, we report the results from the multi-channel CNN architecture in the last section of Table~\ref{tab:autocalibrate_final_results}. As expected, the performance in this case is the best of the models with significant improvements for almost all the EUV channels. Clearly, the success rates belonging to the red category is much lesser compared to the former models implying that the mean success rate is the highest across all tolerance levels. The multi-channel architecture recovers the degradation (dimming) factor for all channels with a success rate of at least $91\%$ for a relative tolerance level of $20\%$ and a mean success rate of $\sim94\%$. It is also evident that this model outperforms the baseline and the single-channel model for all levels of relative tolerances.  For any given level of tolerance the mean across all channels increased significantly, for example with absolute tolerance of $0.05$ the mean increase from $78\%$ to $85\%$, even changing its color classification. In addition, the success rate is consistently the worst for $335$~\AA~and $211$~\AA~channels across all tolerances, whereas the performance of the $131$~\AA~channel is the best.
 % For the same tolerance, the metrics for the worst wavelengths degradation recovery were 211 \AA~ and 335 \AA~ with 82\%. Within a tolerance of 0.05, 131 \AA~ recovers the degradation factor with rate of 99\%. 
 
-The 304 \AA~ channel we see it does consistently good through all the models with not much variation, which is different from 171 \AA~ that does well i n the baseline and has its maximum performance in the Single Channel model, through all tolerances, and a remarkable 94\% TP rate with a tolerance of 0.05.  In opposite, 171 \AA, 211 \AA~ and 335 \AA~ channels have a poor performance in the baseline and the single-channel models, and they have a significant improvement in the Multi-Channel model.
+Looking at specific channels we can see that $304$~\AA~ does consistently good through all the models with not much variation, which wasn't expected. Now observing $171$~\AA, it does well in the baseline and in the Multi-Channel model but surprisingly it has its maximum performance in the Single Channel model, through all tolerances, and a remarkable $94\%$ success rate with a tolerance of $0.05$. In opposite to $171$~\AA, channels $211$~\AA~and $335$~\AA~ have a poor performance in the baseline and the single-channel models, and they have a significant improvement in the Multi-Channel model as expected and hypothesised by this paper.
 
-% It is not sure what caused the drop in the performance when used the multi-channel model, even though the results are not bad, and the average over all the channels increase.
+Observing the Fig.\ref{fig:training_curve}, we can see the train and test MSE loss curve evolving by epoch. Based on the results from the Table \ref{tab:autocalibrate_final_results} and comparing the train and test loss curves in Fig. \ref{fig:training_curve} we can see the model does not heavily overfit in the range of epochs utilised and it presents stable performance on test results. It must be noted that the tendency to overfit on the training set is common in deep learning techniques and, when moderate, it tends to produce good results on the test set. We stopped the training before epoch 1000, where the overfitting on the train set starts to increase.
+
+\begin{figure}
+    \centering
+        \includegraphics[width=0.5\textwidth]{training_plot.pdf}
+        \caption{Graphic of the evolution of training and testing MSE loss through the epochs.}
+        \label{fig:training_curve}
+\end{figure}
+
+In a general overview, the result shows higher success rates for the CNN models, particularly for the Multi-Channel model, which it was predicted  by the toy problem, and for higher tolerances.
 
 \subsection{Modelling Channel Degradation over Time}
     \label{sec:degradation}
     
-In this section we discuss the results obtained when both single-channel and multi-channel CNN architectures are used to recover (predict) the instrumental degradation over time, and compare them with the actual AIA channel degradation curves $V8$ and $V9$, obtained from \textit{AIApy} Python package \footnote{https://aiapy.readthedocs.io/en/latest/?badge=latest}. We use the same SDOML dataset as discussed earlier, but this time without compensating for the channel degradation. All other pre-processing steps including masking the solar limb, rescaling the intensity etc. remain unchanged.  %The data is available at \dataset[text]{url}.
-
-
-\begin{figure*}[ht!]
+In this section we discuss the results obtained when comparing the AIA degradation curves $V8$ and $V9$, with both single-channel and multi-channel CNN models. This process was done using a data set equivalent to the SDOML but with no correction for degradation and data period from $2010$ to $2020$. This tests both models for real degradation suffered by AIA from $2010$ to $2020$.
+\begin{figure*}
 	\centering
 		\centering
-        \includegraphics[width=\textwidth]{luiz_exp_36_apodize_Degradation_Alternative.pdf} 
-        \caption{Channels degradation over Time. From top to bottom: Channel 94~\AA~ (blue) and 131~\AA~(yellow), 171\AA~(green) and 193~\AA~(red), 211~\AA~(purple) and 304\AA~(brown) and 335~\AA~(magenta). The black line is the degradation curve V9 and the gray line is the degradation curve V8. The gray shaded area correspond to the 25\% error of the degradation curve V9. The colorful shaded area is the training period from 2010 to 2014. The vertical dashed line is the last available observation from EVE MEGS-A data.}
+        \includegraphics[width=0.98\textwidth]{luiz_exp_36_apodize_Degradation.pdf} 
+        \caption{Channels degradation over Time. From top to bottom: Channel $94$~\AA~ (blue) and $131$~\AA~(yellow), $171$\AA~(green) and $193$~\AA~(red), $211$~\AA~(purple) and $304$~\AA~(brown) and $335$~\AA~(magenta). The black line is the degradation curve $V9$ and the gray line is the degradation curve $V8$. The gray shaded area correspond to the $25\%$ error of the degradation curve $V9$. The colorful shaded areas are the standard deviation of the CNN models. The vertical black dashed line is the last available observation from EVE MEGS-A data and the vertical gray dashed line is the last training date.}
         \label{fig:degradation_curve}
 \end{figure*}
 
-Figure~\ref{fig:degradation_curve} presents the results of our analysis for all the seven AIA EUV channels. In each panel, we show four quantities: the degradation curve $V9$ (solid black line), the degradation curve $V8$ (solid gray line), predicted degradation from the single-channel model (triangles) and multi-channel model (circles). The shaded gray band depicts the region covering 25\% variation (error) associated with the $V9$ degradation curve. The dashed vertical line coincides with the day (25.05.2014), when EVE MEGS-A instrument stopped working. It is important to note that MEGS-A was earlier used for the sounding rocket calibration purposes, the loss of which caused both the $V8$ and $V9$ degradation curves to become noisier. Recently, \citet{Szenicereaaw6548} addressed this aspect and used deep learning to facilitate a virtual replacement for MEGS-A.
+Figure~\ref{fig:degradation_curve} presents the results of our analysis for all the seven AIA EUV channels. In each panel, we show four quantities: the degradation curve $V9$ (solid black line), the degradation curve $V8$ (solid gray line), predicted degradation from the single-channel model (dashed colorful line) and multi-channel model (solid colorful line). The shaded gray band depicts the region covering $25\%$ variation (error) associated with the $V9$ degradation curve and the colorful shaded areas are the standard deviation of the single and multi channel models. The dashed vertical line coincides with the day (25 May 2014), the last day of EVE MEGS-A instrument data. It is important to note that MEGS-A was earlier used for the sounding rocket calibration purposes, the loss of which caused both the $V8$ and $V9$ degradation curves to become noisier in the future. \citet{Szenicereaaw6548} used deep learning to facilitate a virtual replacement for MEGS-A.
 
-Both the CNN models predict the degradation curves for each channel quite accurately over time as can be seen in the different panels in Fig.~\ref{fig:degradation_curve}, with the exception of 94~\AA\ and 211~\AA\ channel. However, the deviations of the predicted values fall well within the 25\% variation due to the calibration curve $V9$. 
+Both the CNN models predict the degradation curves for each channel quite accurately over time as can be seen in the different panels of Fig.~\ref{fig:degradation_curve}, with the exception of $94$~\AA\ and $211$~\AA\ channel. However, the deviations of the predicted values for these two channels fall well within the $25\%$ variation of the $V9$  calibration curve.
+The increased deviation in predictions for the $94$~\AA\ and $211$~\AA\ channels are likely due to the fact that we trained both the single and multi-channel models with the SDOML dataset that was produced and corrected using the $V8$ degradation curves. The latest degradation curve ($V9$) were updated recently on July $2020$ and the change from $V8$ to $V9$ might have easily caused an impact while training the models. Moreover, the greater deviation of $94$~\AA\ channel in the early stages of the mission are due the fact we limited our degradation factor to be less than one. 
 
-The increased deviation in predictions for the 94~\AA\ and 211~\AA\ channels are likely due to the fact we trained both the single and multi-channel models with the SDOML dataset that was produced and corrected using the $V8$ degradation curves. The latest degradation curve ($V9$) were updated recently on July 2020 and the change from $V8$ to $V9$ might have caused an impact while training.
-
-Comparing both single and multi-channel models, we can see that they overlap almost entirely in the temporal domain, with the single channel model predictions have a more significant variation in channel 211~\AA, 193~\AA~ and 171~\AA. For a more systematic evaluation, we calculated some good fitting metrics of both models in Table \ref{tab:quantities_degradation}.
-
-Table \ref{tab:quantities_degradation} contains three different metrics for evaluating the good fitting of each CNN model on the V9 degradation curve. The first is the Two-Sample Kolmogorov-Smirnov Test (KS), which tests whether two samples come from the same distribution \citep{doi:10.1080/01621459.1951.10500769}. The second is the Pearson Correlation Coefficient (Pearson) that measures the linear correlation between two variables. The last metric is the Fast Dynamic Time Warping \citep[DTW, ][]{fastDTW}, which measures the similarity between two temporal sequences. This last one is important since statistical methods can be too sensitive when comparing two time series. DTW has distance between the series as an output, and for reference the DTW between the V8 and V9 degradation curves are: 94~\AA: 72.17, 131~\AA: 13.03, 171~\AA: 9.82, 193~\AA: 30.05, 211~\AA: 16.86, 304~\AA: 7.02 and 335~\AA: 5.69.
+From the predicted calibration curves computed from the single and multi-channel models, we see that they have a significant overlap throughout the entire period of observation. The single channel model predictions however, have a more significant variation for channels $211$~\AA, $193$~\AA~ and $171$~\AA. For a systematic evaluation and a comparison among the results of the two models across channels, we calculated some goodness of fit metrics and the results are shown in Table~\ref{tab:quantities_degradation}.
 
 \begin{table}[h]
   \centering
-  \caption{Good fitting metrics for single-channel and multi-channel models comparing to the V9 degradation curves. The first metric is the Two-Sample Kolmogorov-Smirnov Test(KS), the second one is Pearson Correlation Coefficient (Pearson), and the last one is the Fast Dynamic Time Warping which measures the similarity between two temporal sequences.}
+  \caption{Goodness of fit metrics for single-channel and multi-channel models with reference to the $V9$ degradation curve. The first metric is the Two-Sample Kolmogorov-Smirnov Test (KS), and second metric is the Fast Dynamic Time Warping.}
   \label{tab:quantities_degradation}
   \centering
-  \begin{tabular}{ccccccc}
+  \begin{tabular}{ccccc}
     \toprule
-    \multirow{2}{*}{Channel} & \multicolumn{3}{c}{{\centering Single Channel}} &  \multicolumn{3}{c}{{\centering Multi-Channel}}  \\
-    \cmidrule(lr){2-4}\cmidrule(lr){5-7}
-     & KS & Pearson & DTW &  KS & Pearson & DTW\\
+    \multirow{2}{*}{Channel} & \multicolumn{2}{c}{{\centering Single Channel}} &  \multicolumn{2}{c}{{\centering Multi-Channel}}  \\
+    \cmidrule(lr){2-3}\cmidrule(lr){4-5}
+     & KS & DTW &  KS & DTW\\
      \midrule
-     94~\AA  &  0.575 & 0.717 & 58.20 &  0.633 & 0.692 & 86.48\\
-     131~\AA &  0.264 & 0.968 & 20.20 &  0.212 & 0.972 & 18.50\\
-     171~\AA &  0.328 & 0.884 & 28.85 &  0.324 & 0.874 & 29.49\\
-     193~\AA &  0.189 & 0.910 & 35.70 &  0.184 & 0.933 & 27.19\\
-     211~\AA &  0.247 & 0.876 & 41.88 &  0.271 & 0.884 & 32.14\\
-     304~\AA &  0.175 & 0.997 &  3.58 &  0.162 & 0.997 &  6.39\\
-     335~\AA &  0.115 & 0.963 & 23.92 &  0.118 & 0.980 & 21.41\\
+     94~\AA  &  0.485 & 7.120 &  0.568 & 9.624\\
+     131~\AA &  0.346 & 2.711 &  0.275 & 1.624\\
+     171~\AA &  0.298 & 3.074 &  0.329 & 3.549\\
+     193~\AA &  0.211 & 1.829 &  0.244 & 2.080\\
+     211~\AA &  0.305 & 2.850 &  0.242 & 2.807\\
+     304~\AA &  0.282 & 1.412 &  0.100 & 1.311\\
+     335~\AA &  0.212 & 2.539 &  0.141 & 2.839\\
      \bottomrule
   \end{tabular}
 \end{table}
 
-As shown in Figure \ref{fig:degradation_curve}, Single-Channel and Multi-Channel models predictions overlap a lot visually in the degradation curves, and we see the same in Table \ref{tab:quantities_degradation}. Except for the 94~\AA~ channel, all metrics are close considering a tolerance. For the KS test, we have low numbers suggesting both models made predictions coming for the same distribution of the degradation curve V9. For the Pearson coefficient, we have values close to one, suggesting a linear correlation between the models prediction and the degradation curve. Both two metrics agree with DTW, where the values are within the amount compared to the distance between the V8 and V9 curves. All the metrics show both models predict remarkably well the degradation curve even though trained only on the first three years of data. Again, 94~\AA~visually and in the metrics has the worse results because it was trained with corrected data using the V8 curve and not V9.
+% \begin{table}[h]
+%   \centering
+%   \caption{Goodness of fit metrics for single-channel and multi-channel models with reference to the $V9$ degradation curve. The first metric is the Two-Sample KS test, the second is the Pearson coefficient, and finally we show the DTW.}
+%   \label{tab:quantities_degradation}
+%   \centering
+%   \begin{tabular}{ccccccc}
+%     \toprule
+%     \multirow{2}{*}{Channel} & \multicolumn{3}{c}{{\centering Single Channel}} &  \multicolumn{3}{c}{{\centering Multi-Channel}}  \\
+%     \cmidrule(lr){2-4}\cmidrule(lr){5-7}
+%      & KS & Pearson & DTW &  KS & Pearson & DTW\\
+%      \midrule
+%      94~\AA  &  0.575 & 0.717 & 58.20 &  0.633 & 0.692 & 86.48\\
+%      131~\AA &  0.264 & 0.968 & 20.20 &  0.212 & 0.972 & 18.50\\
+%      171~\AA &  0.328 & 0.884 & 28.85 &  0.324 & 0.874 & 29.49\\
+%      193~\AA &  0.189 & 0.910 & 35.70 &  0.184 & 0.933 & 27.19\\
+%      211~\AA &  0.247 & 0.876 & 41.88 &  0.271 & 0.884 & 32.14\\
+%      304~\AA &  0.175 & 0.997 &  3.58 &  0.162 & 0.997 &  6.39\\
+%      335~\AA &  0.115 & 0.963 & 23.92 &  0.118 & 0.980 & 21.41\\
+%      \bottomrule
+%   \end{tabular}
+% \end{table}
+
+Table \ref{tab:quantities_degradation} contains two different metrics for evaluating the goodness of fit of each CNN model with the $V9$ degradation curve. The first is the Two-Sample Kolmogorov-Smirnov Test (KS), which determines whether two samples come from the same distribution \citep{two_ks}, and the null hypothesis assumes that the two distributions are identical. The KS test has the advantage that the distribution of statistic does not depend on cumulative distribution function being tested. The second metric is the Fast Dynamic Time Warping \citep[DTW, ][]{fastDTW}, which measures the similarity between two temporal sequences that may not be of the same length. This last one is important since statistical methods can be too sensitive when comparing two time series. DTW has distance between the series as an output, and as a reference the DTW for the different EUV channels between the $V8$ and $V9$ degradation curves are: $94$~\AA-$72.17$, $131$~\AA-~$13.03$, $171$~\AA-$9.82$, $193$~\AA-$30.05$, $211$~\AA-$16.86$, $304$~\AA-$7.02$ and $335$~\AA-$5.69$.
+
+% The second metric is the the well-known Pearson Correlation Coefficient (Pearson) that measures the linear correlation between two variables.
+
+Similar to Fig.~\ref{fig:degradation_curve} we find in Table~\ref{tab:quantities_degradation}, that the predictions from both the single-channel and multi-channel models overlap significantly both in terms of the metric and the time evolution. Except for the $94$~\AA~channel, all others have very close metric values, well within a given level of tolerance. A low value of the KS test metric suggests that the predictions have a similar distribution as the observed $V9$ calibration curve which also indicates the robustness of our CNN architecture. KS test agrees well with DTW, where the values obtained are smaller to the reference values (as indicated earlier) between the $V8$ and the $V9$ calibration curves. Overall, the metric analysis for the goodness of fit between the predictions and the actual calibration curve ($V9$) show that the CNN models perform remarkably well in predicting the degradation curves despite being trained only on the first three years of the observations.  
+%All the metrics show both models predict remarkably well the degradation curve even though trained only on the first three years of data. Again, 94~\AA~visually and in the metrics has the worse results because it was trained with corrected data using the $V8$ curve and not $V9$. Moreover, a high value of Pearson's coefficient for the EUV channels indicate a linear relationship between the CNN predictions and the $V9$ calibration curve.
 
 \subsection{Feature Maps}
     \label{sec:feature-maps}
-
-Figure \ref{fig:autocalibrate_activation_viz} shows four feature maps samples from the last convolutional layer obtained using the top 193~\AA~ image as input. The predicted $\alpha$ from the model is a sigmoid activation function applied to a linear combination of these features. Such a mapping allows us to see that the network learned to identify the limb of the AIA images, the quiet Sun, and the active regions. These filters help us to understand what the models identify as relevant to accomplish the task of retrieving the dimming factor in the AIA images. 
-
-\begin{figure} [h]
+    
+\begin{figure} [h!]
   \centering
   \includegraphics[width=0.8\linewidth]{reference.pdf}
   \includegraphics[width=\linewidth]{latent.pdf}
@@ -305,34 +379,34 @@ Figure \ref{fig:autocalibrate_activation_viz} shows four feature maps samples fr
   \label{fig:autocalibrate_activation_viz}
 \end{figure}
 
+As mentioned in Sect.~\ref{section:model-benchmark-understanding}, the feature maps are the result of applying the filters to an input image. I.e at each layer, the feature map is the output of that layer. In Fig.~\ref{fig:autocalibrate_activation_viz} we discuss about such maps obtained from the output of the last layer of our CNN. The top row shows a reference input image observed at $193$~\AA\ used in this analysis, with its intensity scaled between $0-1$ pixel units, and the bottom row shows $4$ representative feature maps (out of a total of $128$) with their corresponding weights. These maps are obtained from the final max-pooling layer of the multi-channel model and it represents the result of combining all seven EUV channels as input. The predicted $\alpha$ (dimming factors) from the model is a sigmoid activation function applied to a linear combination of these features. Such mapping allows us to see that the network actually learnt to identify the different features of such full-disk solar images such as the limb, the quiet Sun features, and the active regions. The reason for visualising a feature map for a specific AIA images is to try to gain some understanding of what features our CNN detects which are ultimately useful in recovering the degradation or the dimming factors.
 
 \section{Concluding remarks}
 \label{section:summary}
-This paper establishes the framework for a novel technique to calibrate EUV instrument degradation and advance our understanding of the cross-relation between different EUV channels. We began with formulating the problem and setting up a toy problem to test our theories. We then establish two CNNs architectures that take multiple wavelengths as input to auto-correct for on-orbit degradation of the SDO/AIA telescope. We train the model using SDOML dataset and augmented the training set by randomly degrading images at each epoch. We also shuffled images to avoid any time sequence bias. Together with the CNNs, we developed a non-machine learning baseline to benchmark and to compare with the CNNs models. Finally, we tested the CNN models on the dimming factor reconstruction error and we predicted the channels' degradation curve through time and compared it with the degradation curves V8 and V9.
+This paper sets an innovative approach to develop an auto-calibration method and advance our comprehension of the cross-channel relationship among different EUV channels by introducing a robust novel method to correct for the EUV instrument time degradation. We began with formulating the problem and setting up a toy model to test our hypothesis. We then established two CNN architectures that consider multiple wavelengths as input to auto-correct for on-orbit degradation of the AIA instrument on board SDO. We trained the models using SDOML dataset, and further augmented the training set by randomly degrading images at each epoch. This approach made sure that there was no way for the ML framework to ``cheat". We also developed a non-ML baseline to test and to compare its performance with the CNN models. With the best trained CNN models, we reconstructed the AIA multi-channel degradation curves of 2010-2020 and compared with the sounding-rocket based degradation curves $V8$ and $V9$.
 
-The CNN approach significantly outperforms a traditional (not machine-learning based) baseline model (85\% vs. 51\% in terms of TP rate metric), for a tolerance level of 0.05. A multi-channel CNN also outperforms the single-channel CNN. This is consistent with expectations that correlations between structures in different channels, and correlations between size/morphology of structures and brightness can be used to correct degradation. A more intensive work needs to be done to understand the relationship between different channels, and which channels are related to each other. We could use the feature maps to understand how the filters are being activated through the process, and this lays down a future path for a better understanding.
+Our results indicate that the CNN models significantly outperform the non-ML baseline model ($85\%$ vs. $51\%$ in terms of the success rate metric), for a tolerance level of $0.05$. In addition, the multi-channel CNN also outperforms the single-channel CNN with $78\%$ success rate with absolute $0.05$ threshold. This result is consistent with the expectation that correlations between structures in different channels, and size (morphology) of structures and brightness can be used to compensate for the degradation. To further understand the correlation between different channels, we used the concept of feature maps to shed light over this aspect and see how the filters of the CNNs were being activated. We did see that the CNNs were focusing on the different features on the solar images but further detailed work needs to be done in this aspect to understand them better. 
 
-The CNN models also reproduce very closely and within their error the most recent sounding-rocket based degradation curves (V8 and V9). This is particularly remarkable given no time information has been used in the training of the model. For some specific channels, like 94\AA, the model could reproduce the V8 curve well since the SDOML was corrected using this curve. We could also observe that the Single-Channel model could perform as well as the Multi-Channel model even though the multi-channel presented a more robust performance when tested before.
+We also found that the CNN models reproduce the most recent sounding-rocket based degradation curves ($V8$ and $V9$) very closely and within their uncertainty levels. This is particularly promising, given that no time information has been used in training the models. For some specific channels, like $335$~\AA, the model is reproducing the $V8$ curve instead $V9$, since the SDOML was corrected using the former. The single-channel model could perform as well as the multi-channel model even though the multi-channel presented a more robust performance when evaluated on the basis of their success rates.
 
-This work raises the possibility of auto-calibrating deep space EUV instruments (e.g., the EUV images on NASA STEREO spacecraft), which cannot be calibrated using sounding rockets (as is the case for SDO). We envision the technique presented here may also be adapted to imagers or spectrographs operating at other wavelengths (e.g., hyperspectral Earth-oriented imagers). 
+Lastly, this paper presents a unique possibility of auto-calibrating deep space missions such as the one on-board the STEREO spacecraft that are too far away from Earth to be calibrated using sounding-rockets. We also envision that the technique presented here may also be adapted to imaging instruments or spectrographs operating at other wavelengths (e.g., hyperspectral Earth-oriented imagers) observed from different space-based instruments like \textit{IRIS} \citep[][]{2014SoPh..289.2733D}. 
 
-\acknowledgments
+\begin{acknowledgements}
 
-{This project was conducted during the 2019 Frontier Development Lab (FDL) program, a co-operative agreement between NASA and the SETI Institute. We wish to thank IBM for providing computing power through access to the Accelerated Computing Cloud, as well as NASA, Google Cloud and Lockheed Martin for supporting this project. L.F.G.S was supported by the National Science Foundation under Grant No. AGS-1433086. M.C.M.C. and M.J. acknowledge support from NASA’s SDO/AIA (NNG04EA00C) contract to the LMSAL. S.B  acknowledges the support from the Research Council of Norway, project number 250810, and through its Centers of Excellence scheme, project number 262622. This project was also partially performed with funding from Google Cloud Platform research credits program. We thank the NASA’s Living With a Star Program, which SDO is part of, with AIA, and HMI instruments onboard.
+{This project was partially conducted during the 2019 Frontier Development Lab (FDL) program, a co-operative agreement between NASA and the SETI Institute. We wish to thank IBM for providing computing power through access to the Accelerated Computing Cloud, as well as NASA, Google Cloud and Lockheed Martin for supporting this project. L.F.G.S was supported by the National Science Foundation under Grant No. AGS-1433086. M.C.M.C. and M.J. acknowledge support from NASA’s SDO/AIA (NNG04EA00C) contract to the LMSAL. S.B.  acknowledges the support from the Research Council of Norway, project number 250810, and through its Centers of Excellence scheme, project number 262622. This project was also partially performed with funding from Google Cloud Platform research credits program. We thank the NASA’s Living With a Star Program, which SDO is part of, with AIA, and HMI instruments onboard. CHIANTI is a collaborative project involving George Mason University, the University of Michigan (USA), University of Cambridge (UK) and NASA Goddard Space Flight Center (USA). A.G.B. is supported by EPSRC/MURI grant EP/N019474/1 and by Lawrence Berkeley National Lab.\\
 
-\software{We acknowledge for CUDA processing cuDNN \citep{cudnn}, for data analysis and processing we used \citep[Sunpy][]{Sunpy2020}, Numpy \citep{numpy}, Pandas \citep{pandas}, SciPy \citep{scipy}, scikit-image \citep{scikit-image} and scikit-learn\citep{scikit-learn}. Finally all plots were done using Matplotlib \citep{matplotlib} and Astropy \citep{astropy:2018}}.}
-
+Software: We acknowledge for CUDA processing cuDNN \citep{cudnn}, for data analysis and processing we used Sunpy \citep[][]{Sunpy2020}, Numpy \citep{numpy}, Pandas \citep{pandas}, SciPy \citep{scipy}, scikit-image \citep{scikit-image} and scikit-learn\citep{scikit-learn}. Finally all plots were done using Matplotlib \citep{matplotlib} and Astropy \citep{astropy:2018}}.
+\end{acknowledgements}
 
 \bibliography{autocalibration}
-\bibliographystyle{aasjournal}
-
+\bibliographystyle{aa}
 
 \newpage
-\appendix
+\begin{appendix}
 \section{Scaling Units for each AIA channel}
 \label{section:appendix_average}
 
-\begin{table}[ht]
+\begin{table}[h!]
   \centering
   \caption{Table of the scaling units of  AIA channels.}
   \label{tab:average_channels}
@@ -351,5 +425,56 @@ This work raises the possibility of auto-calibrating deep space EUV instruments 
   \end{tabular}
 \end{table}
 
+\section{Detailed model Architectures}
+\label{section:appendix_archtectures}
 
+\begin{table}[h!]
+  \centering
+  \caption{The detailed single channel architecture. From left to right columns we have the order number, layer, output shape and the total number of learnable parameters of the layer. The architecture is composed of two blocks of a convolutional layer, ReLU activation function  and max pooling layer followed by a fully connected (FC) layer and a final sigmoid activation function.}
+  \label{tab:single-channel-arch}
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+    Layer Number & Layer &  Output Shape & Learnable Parameters \\
+     \hline
+1&           Input    &  [1, 256, 256]    &         0 \\
+2&     Convolution    & [64, 254, 254]    &       640 \\
+3&            ReLU    & [64, 254, 254]    &         0 \\
+4&      MaxPooling    &   [64, 84, 84]    &         0 \\
+5&     Convolution    &  [128, 82, 82]    &    73,856 \\
+6&            ReLU    &  [128, 82, 82]    &         0 \\
+7&      MaxPooling    &  [128, 27, 27]    &         0 \\
+8& Fully Connected    &            [1]    &    93,313 \\
+9&         Sigmoid    &            [1]    &         2 \\
+            \hline
+\multicolumn{3}{|c|}{Total Learnable Parameters} &   167,809 \\
+
+    \hline
+  \end{tabular}
+\end{table}
+
+\begin{table}[h!]
+  \centering
+  \caption{The detailed multi-channel architecture. From left to right columns we have the order number, layer, output shape and the total number of learnable parameters of the layer. The architecture is composed of two blocks of a convolutional layer, ReLU activation function  and max pooling layer followed by a fully connected (FC) layer and a final sigmoid activation function.}  
+  \label{tab:multi-channel-arch}
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+     Layer Number & Layer &  Output Shape & Learnable Parameters \\
+     \hline
+1&           Input    &  [7, 256, 256]    &         0 \\
+2&     Convolution    & [64, 254, 254]    &     4,096 \\
+3&            ReLU    & [64, 254, 254]    &         0 \\
+4&      MaxPooling    &   [64, 84, 84]    &         0 \\
+5&     Convolution    &  [128, 82, 82]    &    73,856 \\
+6&            ReLU    &  [128, 82, 82]    &         0 \\
+7&      MaxPooling    &  [128, 27, 27]    &         0 \\
+8& Fully Connected    &            [7]    &   653,191 \\
+9&         Sigmoid    &            [7]    &        56 \\
+            \hline
+\multicolumn{3}{|c|}{Total Learnable Parameters} &   731,143 \\
+
+    \hline
+  \end{tabular}
+\end{table}
+
+\end{appendix}
 \end{document}
